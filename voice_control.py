@@ -1,82 +1,49 @@
 import speech_recognition as sr
 import serial
 
-ser = serial.Serial('com4', 9600)
+ser = serial.Serial('COM4', 9600)
 
-def func():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        r.adjust_for_ambient_noise(source)
+def process_speech(text):
+    text_lower = text.lower()
+    if text_lower == 'goodbye' or text_lower == 'good bye' or text_lower == 'bye':
+        ser.write(b'2')
+    elif text_lower == 'good morning' or text_lower == 'thank you' or text_lower == 'thankyou' or text_lower == 'morning':
+        ser.write(b'1')
+    elif text_lower == 'how are you':
+        ser.write(b'3')
+    elif text_lower == 'where are you from' or text_lower == 'are you from':
+        ser.write(b'4')
+    elif 'drink water' in text_lower or 'drink' in text_lower or 'water' in text_lower:
+        ser.write(b'5')
+    elif text_lower == 'i am fine':
+        ser.write(b'6')
+    elif text_lower == 'lunch':
+        ser.write(b'7')
+    elif text_lower == 'welcome':
+        ser.write(b'8')
+    elif text_lower == 'we are from vit ap' or text_lower == 'ap':
+        ser.write(b'9')
+
+def main():
+    recognizer = sr.Recognizer()
+    microphone = sr.Microphone()
+    
+    with microphone as source:
+        recognizer.adjust_for_ambient_noise(source)
         while True:
             print('Say something')
-            audio = r.listen(source)
+            audio = recognizer.listen(source)
             try:
-                a = r.recognize_google(audio)
-                print("you said " + a.lower())
+                text = recognizer.recognize_google(audio)
+                print("You said:", text)
+                process_speech(text)
+            except sr.UnknownValueError:
+                print("Could not understand audio")
+            except sr.RequestError as e:
+                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+            except KeyboardInterrupt:
+                print("Exiting...")
+                break
 
-                if a.lower() == 'goodbye' or a.lower() == 'good bye' or a.lower() == 'bye':
-                    ser.write('2'.encode())
-                elif a.lower() == 'good morning' or a.lower() == 'thankyou' or a.lower() == 'thank you':
-                    ser.write('1'.encode())
-                a_lower = a.lower()
-                if a_lower == 'angry':
-                    ser.write('3'.encode())
-                elif a_lower == 'aunt':
-                    ser.write('4'.encode())
-                elif a_lower == 'baby':
-                    ser.write('5'.encode())
-                elif a_lower == 'bag':
-                    ser.write('6'.encode())
-                elif a_lower == 'bathroom':
-                    ser.write('7'.encode())
-                elif a_lower == 'bed':
-                    ser.write('8'.encode())
-                elif a_lower == 'book':
-                    ser.write('9'.encode())
-                elif a_lower == 'bored':
-                    ser.write('10'.encode())
-                elif a_lower == 'bro':
-                    ser.write('11'.encode())
-                elif a_lower == 'brother':
-                    ser.write('12'.encode())
-                elif a_lower == 'car':
-                    ser.write('13'.encode())
-                elif a_lower == 'chair':
-                    ser.write('14'.encode())
-                elif a_lower == 'clock':
-                    ser.write('15'.encode())
-                elif a_lower == 'clothes':
-                    ser.write('16'.encode())
-                elif a_lower == 'cold':
-                    ser.write('17'.encode())
-                elif a_lower == 'color':
-                    ser.write('18'.encode())
-                elif a_lower == 'computer':
-                    ser.write('19'.encode())
-                elif a_lower == 'confused':
-                    ser.write('20'.encode())
-                elif a_lower == 'cousin':
-                    ser.write('21'.encode())
-                elif a_lower == 'curious':
-                    ser.write('22'.encode())
-                elif a_lower == 'dad':
-                    ser.write('23'.encode())
-                elif a_lower == 'daughter':
-                    ser.write('24'.encode())
-                elif a_lower == 'day':
-                    ser.write('25'.encode())
-                elif a_lower == 'dont know':
-                    ser.write('26'.encode())
-                elif a_lower == 'door':
-                    ser.write('27'.encode())
-                elif a_lower == 'download':
-                    ser.write('28'.encode())
-                elif a_lower == 'drink':
-                    ser.write('29'.encode())
-                elif a_lower == 'early':
-                    ser.write('30'.encode())
-            except:
-                print(" ")
-
-while 1:
-    func()
+if __name__ == "__main__":
+    main()
