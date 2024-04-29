@@ -165,3 +165,4 @@ Disadvantages:
     2.For improved connectivity, incorporate resistors into the setup.
     3.There should exist predefined words with corresponding image names for display on a TFT screen when detected by a microphone.
       For example, if the microphone detects "hi," an image named "hi.bmp" should be displayed on the TFT screen.
+    4.Better to convert picture format from jpeg to BMP for better experience.
